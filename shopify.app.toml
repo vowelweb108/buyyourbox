@@ -1,0 +1,29 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "4a257c26aac0bed8731d2dd772995e54"
+name = "Build-your-boxes"
+handle = "build-your-boxes"
+application_url = "https://chemicals-souls-race-freedom.trycloudflare.com"
+embedded = true
+
+[build]
+automatically_update_urls_on_dev = true
+dev_store_url = "deoapplication.myshopify.com"
+include_config_on_deploy = true
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "write_content"
+
+[auth]
+redirect_urls = [
+  "https://chemicals-souls-race-freedom.trycloudflare.com/auth/callback",
+  "https://chemicals-souls-race-freedom.trycloudflare.com/auth/shopify/callback",
+  "https://chemicals-souls-race-freedom.trycloudflare.com/api/auth/callback"
+]
+
+[webhooks]
+api_version = "2024-07"
+
+[pos]
+embedded = false
