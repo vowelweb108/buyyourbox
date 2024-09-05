@@ -8,7 +8,7 @@ import {
   Page,
   LegacyCard,
   IndexTable,
-  useIndexResourceState,
+  useIndexResourceState,ButtonGroup
 } from '@shopify/polaris';
 import { useState, useCallback, useEffect } from 'react';
 import { NoteIcon } from '@shopify/polaris-icons';
@@ -38,6 +38,7 @@ function Bundle() {
   const [productIds, setProductIds] = useState([]); // State to store product IDs
   const [editingIndex, setEditingIndex] = useState(null); // Index of the product being edited
   const { productId } = useParams();
+  const [productDetails, setProductDetails] = useState([]);
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
@@ -52,6 +53,56 @@ function Bundle() {
       label: (i + 1).toString(),
     }));
   };
+
+
+  const fetchGraphQLData = async (productIds) => {
+    const url = 'https://greenchoice-flowers-subscriptions.myshopify.com/admin/api/2024-07/graphql.json';
+    const accessToken = 'shpua_56ce58d3b33a5c20bdb9979a75543557';
+
+    const queries = productIds.map((id, index) => `
+      product${index}: product(id: "${id}") {
+        title
+        description
+        onlineStoreUrl
+        images(first: 1) {
+          edges {
+            node {
+              src
+            }
+          }
+        }
+      }
+    `);
+
+    const query = `
+      query {
+        ${queries.join('\n')}
+      }
+    `;
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Shopify-Access-Token': accessToken,
+        },
+        body: JSON.stringify({ query }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      const fetchedProductDetails = productIds.map((_, index) => result.data[`product${index}`]);
+      setProductDetails(fetchedProductDetails);
+    } catch (error) {
+      console.error('Error fetching product details:', error);
+      setError('Failed to fetch product details');
+    }
+  };
+
 
   const resourcePicker = async (singleSelection = false) => {
     try {
@@ -75,6 +126,8 @@ function Bundle() {
 
       const ids = selected.selection.map((product) => product.id);
       setProductIds([...productIds, ...ids]);
+
+      // fetchGraphQLData(ids);
 
       setCurrentPage(1); // Reset to the first page after new products are added
       return selected.selection; // Return the selected product(s)
@@ -120,6 +173,7 @@ function Bundle() {
             setHandle(bundle.handle);
             setProductImages(bundle.images || []); // Example: Set images if available
             setSelectedBunches(bundle.bunches.map(bunch => ({ value: bunch, label: bunch }))); // Example: Set bunches
+            fetchGraphQLData(bundle.productIds || []);
           } else {
             console.error('Bundle not found');
           }
@@ -245,6 +299,22 @@ function Bundle() {
     console.log('Edit product:', index);
     setEditingIndex(index);
 
+    console.log('Edit product:', index);
+    const selectedProduct = await resourcePicker(true); // Open resource picker with single selection
+
+    if (selectedProduct && selectedProduct.length > 0) {
+      const updatedTitles = [...productTitles];
+      const updatedImages = [...productImages];
+
+      updatedTitles[index] = selectedProduct[0].title;
+      updatedImages[index] = selectedProduct[0].images[0]?.originalSrc || '';
+
+      setProductTitles(updatedTitles);
+      setProductImages(updatedImages);
+
+      
+    }
+
     // // Set form fields with the selected product data for editing
     // setTitle(productTitles[index]);
     // setHandle(handle); // Assuming handle is not stored in arrays; it may need to be adjusted
@@ -254,6 +324,10 @@ function Bundle() {
     // // Optionally pre-select the bunches
     // const selectedBunchesForEdit = []; // Fetch bunches related to this product if needed
     // setSelectedBunches(selectedBunchesForEdit);
+
+
+    
+
   };
 
   const handleDelete = (index) => {
@@ -372,9 +446,15 @@ function Bundle() {
           }}
         />
         {bunchesError && <Text color='red'>{bunchesError}</Text>}
-        <Button onClick={handleSubmit} primary>
+        <ButtonGroup>
+        <Button onClick={handleSubmit} variant="primary">
           Save Bundle
         </Button>
+        <Button onClick={() => navigate('/app')}>Back</Button> 
+        </ButtonGroup>
+       
+
+        
       </FormLayout>
 
       <LegacyCard>

@@ -1,8 +1,8 @@
-import { ProductsModel } from "../models/product";
+import { CollectionsModel } from '../models/collection';
 
 export const loader = async () => {
   try {
-    const bundles = await ProductsModel.find({});
+    const bundles = await CollectionsModel.find({});
     
     // if (!bundles || bundles.length === 0) {
     //   return { status: 404, message: 'No bundles found' };

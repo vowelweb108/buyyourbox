@@ -25,38 +25,8 @@ function BundleTable({productId}) {
    return navigate(`./bundle/${bundle._id}`)
 };
 
-  const handleSaveEdit = async () => {
-    debugger
-    try {
-    //   const response = await fetch('/api/bundles/edit', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify({
-    //       id: editingBundle._id,
-    //       title,
-    //       bunches: bunches.split(',').map(b => b.trim()),
-    //       image,
-    //     }),
-    //   });
 
-    //   if (response.ok) {
-    //     const updatedBundle = await response.json();
-    //     setBundles(bundles.map(bundle => 
-    //       bundle._id === updatedBundle.bundle._id ? updatedBundle.bundle : bundle
-    //     ));
-    //     setShowEditModal(false);
-    //   } else {
-    //     const error = await response.json();
-    //     console.error('Failed to update bundle:', error.error);
-    //   }
-
-    navigate(`./api/bundle/${productId}`)
-    } catch (error) {
-      console.error('Failed to update bundle:', error);
-    }
-  };
+  
 
   const handleDeleteBundle = async (bundleId) => {
     if (window.confirm('Are you sure you want to delete this bundle?')) {

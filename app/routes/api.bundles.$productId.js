@@ -1,5 +1,6 @@
 import { json } from '@remix-run/node';
-import { ProductsModel } from '../models/product.js';
+import { CollectionsModel } from '../models/collection';
+// import { ProductsModel } from '../models/product.js';
 
 export const loader = async ({request, params}) => {
 //  const _params = new URL(request.url)
@@ -8,7 +9,7 @@ const query = productId != 0 ? {_id: productId}: {}
 console.log("PARAMS", params) 
   // console.log("QUERY", query)
   try {
-    const bundles = await ProductsModel.find({});
+    const bundles = await CollectionsModel.find({});
     return json(bundles);
   } catch (error) {
     console.error('Error fetching bundles:', error);

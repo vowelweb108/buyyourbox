@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
-const ProductsSchema = new Schema({
+const CollectionSchema = new Schema({
     title: { type: String, required: true },
     handle: { type: String, required: true },
   image: { type: String, required: false },
@@ -10,4 +10,4 @@ const ProductsSchema = new Schema({
     
 }, {timestamps: true, strict: false})
 
-export const ProductsModel = mongoose.models.products || mongoose.model("products", ProductsSchema)
+export const CollectionsModel = mongoose.models.products || mongoose.model("collections", CollectionSchema)

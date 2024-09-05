@@ -1,5 +1,5 @@
 import { json } from "@remix-run/node";
-import { ProductsModel } from "../models/product.js";
+import { CollectionsModel } from '../models/collection';
 import { authenticate } from "../shopify.server.js";
 
 export const action = async ({ request }) => {
@@ -10,7 +10,7 @@ export const action = async ({ request }) => {
     const { title, image, bunches, products,handle } = payload;
 
     // Create or update the bundle in the database
-    const data = await ProductsModel.findOneAndUpdate(
+    const data = await CollectionsModel.findOneAndUpdate(
       { title },
       payload,
       { new: true, upsert: true }
